@@ -1,5 +1,8 @@
 import random
 import time
+import sys
+
+sys.setrecursionlimit(5000)
 
 def randomized_quicksort(arr):
     # Stop recursion when the list has zero or one element
@@ -48,42 +51,40 @@ def measure_time(sort_function, data):
     # Return the total execution time
     return end_time - start_time
 
-# Create datasets for performance testing
-data_size = 500
-
-# Randomly ordered numbers
-random_data = [random.randint(1, 1000) for _ in range(data_size)]
-
-# Numbers already in sorted order
-sorted_data = list(range(data_size))
-
-# Numbers in reverse-sorted order
-reverse_data = list(range(data_size, 0, -1))
-
-# Dataset containing many repeated values
-repeated_data = [random.randint(1, 10) for _ in range(data_size)]
-
-# Compare both Quicksort algorithms on each dataset
-datasets = {
-    "Random": random_data,
-    "Sorted": sorted_data,
-    "Reverse Sorted": reverse_data,
-    "Repeated Elements": repeated_data
-}
+# Test several input sizes to compare scalability
+input_sizes = [100, 500, 1000, 2000]
 
 print("\nPerformance Comparison")
 
-for name, data in datasets.items():
-    # Measure Randomized Quicksort
-    randomized_time = measure_time(randomized_quicksort, data)
+for data_size in input_sizes:
 
-    # Measure Deterministic Quicksort
-    deterministic_time = measure_time(deterministic_quicksort, data)
+    # Create the four required dataset types
+    random_data = [random.randint(1, 1000) for _ in range(data_size)]
+    sorted_data = list(range(data_size))
+    reverse_data = list(range(data_size, 0, -1))
+    repeated_data = [random.randint(1, 10) for _ in range(data_size)]
 
-    # Display the execution times
-    print(f"\n{name} Dataset:")
-    print(f"Randomized Quicksort: {randomized_time:.6f} seconds")
-    print(f"Deterministic Quicksort: {deterministic_time:.6f} seconds")
+    datasets = {
+        "Random": random_data,
+        "Sorted": sorted_data,
+        "Reverse Sorted": reverse_data,
+        "Repeated Elements": repeated_data
+    }
+
+    print(f"\nInput Size: {data_size}")
+
+    for name, data in datasets.items():
+
+        # Measure Randomized Quicksort
+        randomized_time = measure_time(randomized_quicksort, data)
+
+        # Measure Deterministic Quicksort
+        deterministic_time = measure_time(deterministic_quicksort, data)
+
+        # Display the execution times
+        print(f"\n{name} Dataset:")
+        print(f"Randomized Quicksort: {randomized_time:.6f} seconds")
+        print(f"Deterministic Quicksort: {deterministic_time:.6f} seconds")
 
     # Hash table implementation using chaining
 class HashTable:
