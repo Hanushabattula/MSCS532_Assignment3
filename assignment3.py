@@ -88,58 +88,59 @@ for data_size in input_sizes:
 
     # Hash table implementation using chaining
 class HashTable:
+
+    # A large prime used by the universal hash function
+    HASH_PRIME = 2_147_483_647
+
     def __init__(self, size=10):
         # Create an empty bucket for each position in the table
         self.size = size
         self.table = [[] for _ in range(size)]
 
-            # Convert a key into a bucket index
-    def hash_function(self, key):
-        # Python's hash function creates a hash value,
-        # and modulo keeps the index within the table size
-        return hash(key) % self.size
+        # Choose random coefficients for the hash function
+        self.a = random.randint(1, self.HASH_PRIME - 1)
+        self.b = random.randint(0, self.HASH_PRIME - 1)
 
-        # Insert a key-value pair into the hash table
+    # Convert a key into a bucket index
+    def hash_function(self, key):
+        # Convert Python's hash value to a non-negative integer
+        key_int = hash(key) & 0x7FFFFFFFFFFFFFFF
+
+        # Multiply-mod-prime hashing approach
+        return ((self.a * key_int + self.b) % self.HASH_PRIME) % self.size
+
+    # Insert a key-value pair into the hash table
     def insert(self, key, value):
-        # Find the bucket where the key belongs
         index = self.hash_function(key)
 
-        # Check whether the key already exists
+        # Update the value if the key already exists
         for pair in self.table[index]:
             if pair[0] == key:
                 pair[1] = value
                 return
 
-        # Add the new key-value pair to the bucket
         self.table[index].append([key, value])
 
-            # Search for a key in the hash table
+    # Search for a key in the hash table
     def search(self, key):
-        # Find the bucket where the key should be stored
         index = self.hash_function(key)
 
-        # Search through the key-value pairs in the bucket
         for pair in self.table[index]:
             if pair[0] == key:
                 return pair[1]
 
-        # Return None if the key is not found
         return None
 
-        # Delete a key-value pair from the hash table
+    # Delete a key-value pair from the hash table
     def delete(self, key):
-        # Find the bucket where the key should be stored
         index = self.hash_function(key)
 
-        # Search for the key inside the bucket
         for pair in self.table[index]:
             if pair[0] == key:
                 self.table[index].remove(pair)
                 return True
 
-        # Return False if the key was not found
         return False
-
     # Test the hash table operations
 hash_table = HashTable()
 
